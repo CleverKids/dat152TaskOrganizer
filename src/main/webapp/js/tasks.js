@@ -7,6 +7,10 @@ const url = "../TaskServices/api/services";
 const taskbox = document.querySelector("task-box");
 const tasklist = document.querySelector("task-list");
 
-const response = await fetch("../TaskServices/api/services/allstatuses", {method: "GET"});
-const result = await response.json();
-taskbox.setStatuseslist(result);
+const statuslistResponse = await fetch(url + "/allstatuses", {method: "GET"}); 
+const statuslistResult = await statuslistResponse.json();
+taskbox.setStatuseslist(statuslistResult);
+
+const tasklistResponse = await fetch(url + "/tasklist", {method: "GET"});
+const tasklistResult = await tasklistResponse.json();
+tasklist.setStatuseslist(tasklistResult);

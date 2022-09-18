@@ -55,9 +55,9 @@ export default class extends HTMLElement {
 //        
 //    }
 //    
-//    #setStatuseslist(statuslist){
-//        
-//    }
+    #setStatuseslist(statuslist){
+        
+    }
 //    
 //    #enableaddtask(){
 //        
