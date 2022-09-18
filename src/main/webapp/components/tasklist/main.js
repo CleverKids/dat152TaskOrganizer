@@ -1,5 +1,6 @@
 export default class extends HTMLElement {
     #shadow;
+    #statuses;
     
     constructor(){
         super();
@@ -55,8 +56,8 @@ export default class extends HTMLElement {
 //        
 //    }
 //    
-    #setStatuseslist(statuslist){
-        
+    setStatuseslist(statuslist){
+        this.#statuses = statuslist.allstatuses;
     }
 //    
 //    #enableaddtask(){

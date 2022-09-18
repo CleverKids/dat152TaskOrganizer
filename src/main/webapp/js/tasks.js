@@ -9,8 +9,13 @@ const tasklist = document.querySelector("task-list");
 
 const statuslistResponse = await fetch(url + "/allstatuses", {method: "GET"}); 
 const statuslistResult = await statuslistResponse.json();
-taskbox.setStatuseslist(statuslistResult);
+if(statuslistResult.responseStatus === true) {
+    taskbox.setStatuseslist(statuslistResult);
+    tasklist.setStatuseslist(statuslistResult);
+}
 
 const tasklistResponse = await fetch(url + "/tasklist", {method: "GET"});
 const tasklistResult = await tasklistResponse.json();
-tasklist.setStatuseslist(tasklistResult);
+if(tasklistResult.responseStatus === true) {
+    tasklistResult.tasks.forEach(tasklist.showTask);
+}
