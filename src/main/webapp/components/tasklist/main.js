@@ -1,5 +1,6 @@
 export default class extends HTMLElement {
     #shadow;
+    #statuses;
     
     constructor(){
         super();
@@ -25,8 +26,10 @@ export default class extends HTMLElement {
         
         const content = `
         <table id = "tasktable">
+         <tr>
             <th>Task</th>
             <th>Status</th>
+         </tr>
         </table>
         `
         wrapper.insertAdjacentHTML('beforeend',content);
@@ -34,7 +37,13 @@ export default class extends HTMLElement {
         
         return wrapper;
     }
-//    #showTask(newtask){
+    showTask(newtask){
+        
+        const tasks = this.#shadow.getElementById("tasktable");
+        
+        tasks.innerHTML = newtask.id + "," + newtask.title + "," + newtask.status ;
+        
+        
 //        const wrapper = document.createElement('div');
 //        const content = `
 //            <p>
@@ -45,7 +54,7 @@ export default class extends HTMLElement {
 //        wrapper.insertAdjacentHTML('beforebegin', content);
 //        this.#shadow.appendChild(wrapper);
 //        return wrapper;
-//    }
+    }
     
 //    #updateTask(status){
 //        const content = this.#shadow.querySelector('div')
@@ -55,8 +64,8 @@ export default class extends HTMLElement {
 //        
 //    }
 //    
-    #setStatuseslist(statuslist){
-        
+    setStatuseslist(statuslist){
+        this.#statuses = statuslist.allstatuses;
     }
 //    
 //    #enableaddtask(){
