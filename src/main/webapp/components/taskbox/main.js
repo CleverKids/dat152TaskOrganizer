@@ -9,10 +9,11 @@ export default class extends HTMLElement {
 
         this.#shadow = this.attachShadow({ mode: 'open' });
 
-        const button = document.querySelector("button");
+/*        const button = document.querySelector("button");
         console.log("heiBox");
         console.log(button);
         button.addEventListener('click', this.#show.bind(this));
+*/
 
     }
 
@@ -58,7 +59,7 @@ export default class extends HTMLElement {
         return wrapper;
     }
 
-    #show() {
+    show() {
         const box = this.#shadow.querySelector("dialog");
         box.showModal();
     }
@@ -114,7 +115,7 @@ export default class extends HTMLElement {
 
 
 
-    #close() {
+    close() {
         const box = this.#shadow.querySelector("dialog");
         box.close();
     }

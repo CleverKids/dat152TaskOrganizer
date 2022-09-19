@@ -40,6 +40,10 @@ console.log("heiTasksview1");
 
         tasklist.setDeleteTaskHandler(deleteTask.bind(this));
 
+        tasklist.setNewTaskHandler(showTaskBox.bind(this));
+
+        tasklist.enableaddtask();
+
 //        const tasklistResponse = await fetch(url + "/tasklist", {method: "GET"});
 //        const tasklistResult = await tasklistResponse.json();
 
@@ -55,6 +59,10 @@ console.log("heiTasksview1");
            }
         }*/
 
+        function showTaskBox(){
+            taskbox.show();
+        }
+
        async function addTask(task) {
            console.log("hei1");
         const requestSettings = {
@@ -66,15 +74,18 @@ console.log("heiTasksview1");
         };
 
         try {
-            const response = await fetch(url+ "/task", requestSettings);
+            const response = await fetch(url+"/task", requestSettings);
             console.log("hei2");
             if (response.ok) {
                 const object = await response.json();
 
                 if (typeof object.responseStatus != "undefined") {
                     if (object.responseStatus) {
-                        const tasklist = document.querySelector("task-list");
-                        console.log("hei3");
+                    //   const tasklist = document.querySelector("task-list");
+                        console.log(object.task);
+                        taskbox.close();
+                       tasklist.showTask(object.task);
+
                     //    updateTaskList();
                     //    document.reload();
                     } else {
@@ -87,6 +98,7 @@ console.log("heiTasksview1");
         } catch (e) {
             console.log("Could not connect to server");
         }
+
     }
 
     async function updateTask(taskId, newStatus) {
@@ -105,7 +117,7 @@ console.log("heiTasksview1");
 
                 if (typeof object.responseStatus != "undefined") {
                     if (object.responseStatus) {
-                        const tasklist = document.querySelector("task-list");
+                    //    const tasklist = document.querySelector("task-list");
                         tasklist.updateTask(object.task);
                     } else {
                         console.log("Could not connect to server");
