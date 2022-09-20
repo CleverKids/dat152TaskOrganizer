@@ -44,6 +44,8 @@ console.log("heiTasksview1");
 
         tasklist.enableaddtask();
 
+        tasklist.setUpdateTaskHandler(deleteTask.bind(this));
+
 //        const tasklistResponse = await fetch(url + "/tasklist", {method: "GET"});
 //        const tasklistResult = await tasklistResponse.json();
 
@@ -100,6 +102,8 @@ console.log("heiTasksview1");
         }
 
     }
+
+
 
     async function updateTask(taskId, newStatus) {
         const requestSettings = {
