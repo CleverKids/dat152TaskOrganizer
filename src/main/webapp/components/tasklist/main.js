@@ -2,11 +2,14 @@ export default class extends HTMLElement {
     #shadow;
     #callbacks = new Map();
     #callbackId = 0;
+    #addcallbackId = 0;
+    #changecallbackId = 0;
+    #deletecallbackId = 0;
     #statuses;
-    
+
     constructor(){
         super();
-        
+
         this.#shadow = this.attachShadow({mode: 'open'});
         this.#createHTML();
         console.log("hei TaskList");
@@ -30,6 +33,7 @@ export default class extends HTMLElement {
         this.#callbacks.set(this.#callbackId, method);
         const prevId = this.#callbackId;
         ++this.#callbackId;
+        this.#deletecallbackId = prevId;
         return prevId;
     }
 
@@ -37,6 +41,7 @@ export default class extends HTMLElement {
         this.#callbacks.set(this.#callbackId, method);
         const prevId = this.#callbackId;
         ++this.#callbackId;
+        this.#addcallbackId = prevId;
         return prevId;
     }
 
@@ -44,6 +49,7 @@ export default class extends HTMLElement {
         this.#callbacks.set(this.#callbackId, method);
         const prevId = this.#callbackId;
         ++this.#callbackId;
+        this.#changecallbackId = prevId;
         return prevId;
     }
 
@@ -51,6 +57,8 @@ export default class extends HTMLElement {
         const wrapper = document.createElement('div');
 
         const content = `
+
+       
         <form id="taskForm" name = "taskForm">
         <table id = "tasktable">
          <tr>
@@ -84,6 +92,70 @@ export default class extends HTMLElement {
             remove.textContent = "Remove";
             remove.id = newtask.id;
 
+        //    const tempRemove = this.deletetaskCallback;
+            remove.addEventListener('click',() => {this.deletetaskCallback(newtask.id);
+            });
+
+/*
+            const content ="
+            <table id="tasktable">
+                <tbody>
+                <tr>
+                    <th>Task</th>
+                    <th>Status</th>
+                    <th>
+                    </th>
+                    <th>
+                    </th>
+                </tr>
+
+                <tr>
+                    <td hidden="">3</td>
+                    <td>Wash floor</td>
+                    <td>DONE</td>
+                    <td>
+                        <select id="3">
+                        <option disabled="" hidden="">Modify</option>
+                        <option>WAITING</option>
+                        <option>ACTIVE</option>
+                        <option>DONE</option>
+                    </select></td><td>
+                        <button id="3">Remove</button>
+                </td>
+                </tr>
+                <tr>
+                    <td hidden="">2</td>
+                    <td>Wash windows</td>
+                    <td>ACTIVE</td>
+                    <td>
+                        <select id="2">
+                            <option disabled="" hidden="">Modify</option>
+                            <option>WAITING</option>
+                            <option>ACTIVE</option>
+                            <option>DONE</option
+                            ></select></td>
+                    <td>
+                        <button id="2">Remove</button>
+                </td>
+                </tr>
+                <tr>
+                    <td hidden="">1</td>
+                    <td>Paint roof</td>
+                    <td>WAITING</td>
+                    <td><select id="1">
+                        <option disabled="" hidden="">Modify</option>
+                        <option>WAITING</option>
+                        <option>ACTIVE</option>
+                        <option>DONE</option>
+                    </select>
+                    </td>
+                    <td><button id="1">Remove</button>
+                    </td></tr>
+                </tbody>
+            </table>
+"
+*/
+
         const statusOptions = document.createElement("select");
         statusOptions.id = newtask.id;
 
@@ -114,17 +186,19 @@ export default class extends HTMLElement {
         const tempStatuses = this.#statuses;
         const change = this.changestatusCallback;
 
-        opt1.onchange = function(){change(1,"tull");};
+     //   opt1.onchange = function(){change(1,"tull");};
+        opt1.addEventListener(`click`, () => this.changestatusCallback(newtask.id,this.#statuses[0]));
 
     /*    opt1.addEventListener(`click`,function(){
             console.log("opt1");
             change(1,"tull");
         });
-    */    opt2.addEventListener(`click`, this.testWindow);
-        opt3.addEventListener(`click`,function(){
-            console.log("opt3");
-            change(newtask.id,tempStatuses[2]);
-        });
+    */    opt2.addEventListener(`click`, () => this.changestatusCallback(newtask.id,this.#statuses[1]));
+        opt3.addEventListener(`click`,() => this.changestatusCallback(newtask.id,this.#statuses[2]));
+   //     );
+  //          console.log("opt3");
+  //          change(newtask.id,tempStatuses[2]);
+     //   });
 
         statusOptions.add(opt0);
         statusOptions.add(opt1);
@@ -149,7 +223,7 @@ export default class extends HTMLElement {
     }
 
 
-    
+
    #updateTask(status){
         const content = this.#shadow.querySelector('div')
     }
@@ -183,18 +257,22 @@ export default class extends HTMLElement {
     }
 
    enableaddtask(){
-       const button = document.querySelector("button");
+       const button = this.#shadow.getElementById("addTaskBtn");
        console.log("heiBox");
        console.log(button);
+       button.disabled = false;
        button.addEventListener('click', this.addtaskCallback.bind(this));
    }
 
     addtaskCallback(event){
+        console.log("opening taskbox")
 
         event.preventDefault();
         this.message = "";
+    //    const addcallBackid = this.#addcallbackId
 
-        this.#callbacks.forEach(method => { method() });
+       this.#callbacks.get(this.#addcallbackId)();
+        //    this.#callbacks.forEach(method => { method() });
 
     }
 
@@ -209,19 +287,32 @@ export default class extends HTMLElement {
     //   if (
       //     window.confirm("Set " +  + " to " +  + " ?")){
      //   if(conf){
-           this.#callbacks.forEach(method => { method(id,newstatus) });
+      //  const idChange = id;
+       const newstatusJSON = {};
+       newstatusJSON.status = newstatus;
+      //  const changeCallbackNr = this.#changecallbackId;
+        //   this.#callbacks.forEach(method => { method(idChange,newstatusChange) });
+              this.#callbacks.get(this.#changecallbackId).call(null, id ,newstatusJSON);
+    //    this.#callbacks[changeCallbackNr].forEach(t => t(idChange,newstatusChange));
            console.log("confirmed");
     //    }
     }
-//    
-//    #deletetaskCallback(id){
+
+    deletetaskCallback(id){
+        console.log("deleting: " + id);
+
+      //  const idDelete = id;
+      //  const deleteCallBackNr = this.#deletecallbackId;
+       //    this.#callbacks[this.#deletecallbackId](idDelete);
+      //  const met = this.#callbacks.get(this.#deletecallbackId);
+      //  met.forEach(m => m(id));
+      //  const args = {id};
+        this.#callbacks.get(this.#deletecallbackId).call(null,id);
+
+        //    this.#callbacks.forEach(method => { method(idDelete) });
+    }
 //
-//    }
-//    
 //    #noTask(){
 //        
 //    }
-}
-function func(){
-    console.log("hei")
 }

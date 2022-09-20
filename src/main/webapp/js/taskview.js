@@ -44,7 +44,7 @@ console.log("heiTasksview1");
 
         tasklist.enableaddtask();
 
-        tasklist.setUpdateTaskHandler(deleteTask.bind(this));
+        tasklist.setUpdateTaskHandler(updateTask.bind(this));
 
 //        const tasklistResponse = await fetch(url + "/tasklist", {method: "GET"});
 //        const tasklistResult = await tasklistResponse.json();
@@ -65,7 +65,7 @@ console.log("heiTasksview1");
             taskbox.show();
         }
 
-       async function addTask(task) {
+        async function addTask(task) {
            console.log("hei1");
         const requestSettings = {
             "method": "POST",
@@ -105,7 +105,7 @@ console.log("heiTasksview1");
 
 
 
-    async function updateTask(taskId, newStatus) {
+    async function updateTask(taskId,newStatus) {
         const requestSettings = {
             "method": "PUT",
             "headers": {"Content-Type": "application/json; charset=utf-8"},
@@ -115,14 +115,14 @@ console.log("heiTasksview1");
         };
 
         try {
-            const response = await fetch(url+`/task/${taskId}`, requestSettings);
+            const response = await fetch(url+"/task/" + taskId, requestSettings);
             if (response.ok) {
                 const object = await response.json();
 
                 if (typeof object.responseStatus != "undefined") {
                     if (object.responseStatus) {
                     //    const tasklist = document.querySelector("task-list");
-                        tasklist.updateTask(object.task);
+                       tasklist.updateTask(object.task);
                     } else {
                         console.log("Could not connect to server");
                     }
@@ -138,13 +138,14 @@ console.log("heiTasksview1");
     async function deleteTask(taskId)
     {
         try {
-            const response = await fetch(url+`/task/${taskId}`, {"method": "DELETE"});
+            const response = await fetch(url+"/task/" + taskId, {"method": "DELETE"});
             if (response.ok) {
                 const object = await response.json();
                 if (typeof object.responseStatus != "undefined") {
                     if (object.responseStatus) {
-                        const tasklist = document.querySelector("task-list");
+                    //    const tasklist = document.querySelector("task-list");
                         tasklist.removeTask(object.id);
+                        console.log("deleted hei");
                     } else {
                         console.log("Could not connect to server");
                     }
