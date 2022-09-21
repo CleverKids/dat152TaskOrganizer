@@ -43,18 +43,11 @@ export default class extends HTMLElement {
         const wrapper = document.createElement('div');
 
         const content = `
-
-       
-        <form id="taskForm" name = "taskForm">
-        <table id = "tasktable">
-         <tr>
-            <th>Task</th>
-            <th>Status</th>
-            <th></th>
-            <th></th>
-         </tr>
-        </table>
-        </form>
+        <H1>Tasks</H1>
+         <p>
+            Waiting for server data
+        </p>
+        <button type="button" id="addTaskBtn" disabled>New task</button>
         `
         wrapper.insertAdjacentHTML('beforeend',content);
         this.#shadow.appendChild(wrapper);
@@ -116,42 +109,23 @@ export default class extends HTMLElement {
         const modifyColumn = row.insertCell(3);
         const buttonColumn = row.insertCell(4);
 
-
         idColumn.textContent = newtask.id;
         idColumn.hidden = true;
         titleColumn.textContent = newtask.title;
         statusColumn.textContent= newtask.status;
         modifyColumn.append(statusOptions);
         buttonColumn.append(remove);
-
-
     }
-
-
 
     updateTask(status){
         const id = status.id;
         const newStatus = status.status;
-        const table = this.#shadow.getElementById("tasktable");
-        console.log("inni updateTask");
         if (table.rows.length > 1){
-            let found = 0;
-            console.log("inni 1st if");
             for (var i=1;i<table.rows.length;i++){
-                console.log("inni for");
-                if (table.rows[i].cells[0].innerHTML === id){
-                    console.log("fant riktig inni for");
+                if (table.rows[i].cells[0].innerHTML == id){
                     table.rows[i].cells[2].innerHTML = newStatus;
-                    found = 1;
                     break;
                 }
-            }
-
-            if(found){
-                console.log('--for testing-- task with id = ['+id+'] had status changed');
-            }
-            else{
-                console.log('task with id = ['+id+'] not found');
             }
         }
     }
@@ -185,8 +159,23 @@ export default class extends HTMLElement {
     }
 
    enableaddtask(){
-       const button = document.getElementById("addTaskBtn");
-       //    const button = document.querySelector("button");
+       const wrapper = document.createElement('div');
+       const content = `
+        <form id="taskForm" name = "taskForm">
+        <table id = "tasktable">
+         <tr>
+            <th>Task</th>
+            <th>Status</th>
+            <th></th>
+            <th></th>
+         </tr>
+        </table>
+        </form>
+        `
+       wrapper.insertAdjacentHTML('beforeend',content);
+       this.#shadow.appendChild(wrapper);
+
+       const button = this.#shadow.getElementById("addTaskBtn");
        console.log("heiBox");
        console.log(button);
        button.disabled = false;
@@ -204,31 +193,60 @@ export default class extends HTMLElement {
 
     }
 
-    testWindow(){
-        window.confirm("heisann");
-    }
-
     changestatusCallback(id,newstatus){
         console.log("status change hei");
         const newstatusJSON = {};
         newstatusJSON.status = newstatus;
-        //   this.#callbacks.forEach(method => { method(newstatus,id) });
-        const met = this.#callbacks.get(this.#changecallbackId);
-        met(id,newstatusJSON);
 
-        console.log("confirmed");
-    //    }
+        const table = this.#shadow.getElementById("tasktable");
+        if (table.rows.length > 1){
+            var row_find = 0,found = 0;
+
+            for (var i=1;i<table.rows.length;i++){
+                if (table.rows[i].cells[0].innerHTML == id){
+                    row_find = i;
+                    found = 1;
+                    break;
+                }
+            }
+
+            if(found){
+                if(confirm("Set \"" + table.rows[row_find].cells[1].innerHTML + "\" to " + newstatus )) {
+                    const met = this.#callbacks.get(this.#changecallbackId);
+                    met(id, newstatusJSON);
+                    console.log("confirmed");
+                }
+            }
+        }
+
+
     }
 
     deletetaskCallback(id){
         console.log("deleting: ?");
         console.log("deleting: " + id);
 
-    //    this.#callbacks.get(this.#deletecallbackId).call(null,id);
-        const met = this.#callbacks.get(this.#deletecallbackId);
-        met(id);
+        const table = this.#shadow.getElementById("tasktable");
+        if (table.rows.length > 1){
+            var row_find = 0,found = 0;
 
-        //     this.#callbacks.forEach(method => { method(id) });
+            for (var i=1;i<table.rows.length;i++){
+                if (table.rows[i].cells[0].innerHTML == id){
+                    row_find = i;
+                    found = 1;
+                    break;
+                }
+            }
+
+            if(found){
+                if(confirm("Delete task \'" + table.rows[row_find].cells[1].innerHTML + "\'?")) {
+                    const met = this.#callbacks.get(this.#deletecallbackId);
+                    met(id);
+                    console.log("confirmed");
+                }
+            }
+        }
+
     }
 
     noTask() {
