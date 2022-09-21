@@ -6,21 +6,13 @@ export default class extends HTMLElement {
 
     constructor() {
         super();
-
-        this.#shadow = this.attachShadow({ mode: 'open' });
-
-    //    const button = document.querySelector("button");
-        console.log("heiBox");
-    //    console.log(button);
-    //    button.addEventListener('click', this.show.bind(this));
-
+        this.#shadow = this.attachShadow({mode: 'closed'});
     }
 
     setAddTaskHandler(method) {
         this.#callbacks.set(this.#callbackId, method);
         const prevId = this.#callbackId;
         ++this.#callbackId;
-        console.log("set handler hei")
         return prevId;
     }
 
@@ -42,8 +34,6 @@ export default class extends HTMLElement {
                             <option value=${this.#statuses[1]}>${this.#statuses[1]}</option>
                             <option value=${this.#statuses[2]}>${this.#statuses[2]}</option>
                         </select>
-                    
-                   
                     <button type="submit" id="addB">Add task</input>
                 </p>
                 </div>  
@@ -51,7 +41,6 @@ export default class extends HTMLElement {
             </form>
         </dialog>
         `
-
         wrapper.insertAdjacentHTML('beforeend', content);
         this.#shadow.appendChild(wrapper);
 
@@ -64,37 +53,16 @@ export default class extends HTMLElement {
     }
 
     setStatuseslist(list) {
-//      responsestatus sjekk  
-//        this.#statuses = JSON.stringify(list);
-        this.#statuses = list.allstatuses;    
-        console.log(this.#statuses);
+        this.#statuses = list.allstatuses;
         this.#createHTML();
 
         const form = this.#shadow.getElementById("taskForm");
-        console.log(form.toString);
-        console.log("form hei");
         form.addEventListener('submit', this.#newtaskCallback.bind(this));
-
-/*
-        const submit = this.#shadow.getElementById("addB");
-        submit.addEventListener('click', this.#newtaskCallback.bind(this));
-        */
-
     }
-/*
-    #newtaskCallback(callback) {
-        const addTB = this.#shadow.getElementById("addB");
-        addTB.addEventListener('click', callback.bind(this));
-        //sikkert ikke helt rett
-    }
-*/
 
     #newtaskCallback(event) {
         event.preventDefault();
         this.message = "";
-
-        console.log("newtask hei")
-        console.log(event.target);
 
         const task = {};
         const formData = new FormData(event.target);
@@ -103,16 +71,10 @@ export default class extends HTMLElement {
             task[pair[0]] = pair[1].trim();
         }
 
-
-        console.log(JSON.stringify(task));
-        console.log(task.title);
-        console.log(task.status);
-
-        this.#callbacks.forEach(method => { method(task) });
+        this.#callbacks.forEach(method => {
+            method(task)
+        });
     }
-
-
-
 
     close() {
         const box = this.#shadow.querySelector("dialog");
