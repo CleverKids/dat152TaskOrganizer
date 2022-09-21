@@ -34,6 +34,8 @@ console.log("heiTasksview1");
         }
 
 
+
+
     //    updateTaskList()
 
         taskbox.setAddTaskHandler(addTask.bind(this));
@@ -65,6 +67,40 @@ console.log("heiTasksview1");
             taskbox.show();
         }
 
+    async function updateTasklist() {
+        console.log("hei1");
+     const requestSettings = {
+        "method": "POST",
+        "headers": { "Content-Type": "application/json; charset=utf-8" },
+        "body": JSON.stringify(task),
+        "cache": "no-cache",
+        "redirect": "error"
+        };
+
+    try {
+        const response = await fetch(url+"/task", requestSettings);
+        console.log("hei2");
+        if (response.ok) {
+            const object = await response.json();
+
+            if (typeof object.responseStatus != "undefined") {
+                if (object.responseStatus) {
+                    console.log(object.task);
+                    taskbox.close();
+                    tasklist.showTask(object.task);
+                } else {
+                    console.log("Could not connect to server");
+                }
+            } else {
+                console.log("Could not connect to server");
+            }
+        }
+    } catch (e) {
+        console.log("Could not connect to server");
+    }
+
+}
+
         async function addTask(task) {
            console.log("hei1");
         const requestSettings = {
@@ -83,13 +119,9 @@ console.log("heiTasksview1");
 
                 if (typeof object.responseStatus != "undefined") {
                     if (object.responseStatus) {
-                    //   const tasklist = document.querySelector("task-list");
                         console.log(object.task);
                         taskbox.close();
-                       tasklist.showTask(object.task);
-
-                    //    updateTaskList();
-                    //    document.reload();
+                        tasklist.showTask(object.task);
                     } else {
                         console.log("Could not connect to server");
                     }
@@ -121,8 +153,7 @@ console.log("heiTasksview1");
 
                 if (typeof object.responseStatus != "undefined") {
                     if (object.responseStatus) {
-                    //    const tasklist = document.querySelector("task-list");
-                    //   tasklist.updateTask(object.task);
+                       tasklist.updateTask(object.task);
                     } else {
                         console.log("Could not connect to server");
                     }
@@ -153,8 +184,7 @@ console.log("heiTasksview1");
                 const object = await response.json();
                 if (typeof object.responseStatus != "undefined") {
                     if (object.responseStatus) {
-                    //    const tasklist = document.querySelector("task-list");
-                    //    tasklist.removeTask(object.id);
+                        tasklist.removeTask(object.id);
                         console.log("deleted task: " + taskId);
                     } else {
                         console.log("Could not connect to server");

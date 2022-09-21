@@ -13,20 +13,6 @@ export default class extends HTMLElement {
         this.#shadow = this.attachShadow({mode: 'open'});
         this.#createHTML();
         console.log("hei TaskList");
-//        const newtask = {
-//            "id": 5,
-//            "title": "Do DAT152 homework",
-//            "status": "ACTIVE"
-//        };
-//        this.#showTask(newtask);
-//        
-//        const status = {
-//            "id": 1,
-//            "status": "ACTIVE"
-//        };
-//        this.#updateTask(status);
-
-//        const f = confirm("ff");
     }
 
     setDeleteTaskHandler(method) {
@@ -89,8 +75,6 @@ export default class extends HTMLElement {
 
         //    const tempRemove = this.deletetaskCallback;
             remove.addEventListener('click',() => {this.deletetaskCallback(newtask.id)});
-
-
         const statusOptions = document.createElement("select");
         statusOptions.id = newtask.id;
 
@@ -114,15 +98,18 @@ export default class extends HTMLElement {
         const tempStatuses = this.#statuses;
         const change = this.changestatusCallback;
 
-        opt1.addEventListener(`click`, () => this.changestatusCallback(newtask.id,this.#statuses[0]));
-        opt2.addEventListener(`click`, () => this.changestatusCallback(newtask.id,this.#statuses[1]));
-        opt3.addEventListener(`click`,() => this.changestatusCallback(newtask.id,this.#statuses[2]));
-
+    //    opt1.addEventListener(`click`, () => this.changestatusCallback(newtask.id,this.#statuses[0]));
+    //    opt2.addEventListener(`click`, () => this.changestatusCallback(newtask.id,this.#statuses[1]));
+    //    opt3.addEventListener(`click`,() => this.changestatusCallback(newtask.id,this.#statuses[2]));
 
         statusOptions.add(opt0);
         statusOptions.add(opt1);
         statusOptions.add(opt2);
         statusOptions.add(opt3);
+
+        statusOptions.addEventListener('change',
+            () => this.changestatusCallback(newtask.id,
+                statusOptions.options[statusOptions.selectedIndex].text));
 
         const idColumn = row.insertCell(0);
         const titleColumn= row.insertCell(1);
@@ -143,8 +130,31 @@ export default class extends HTMLElement {
 
 
 
-   #updateTask(status){
-        const content = this.#shadow.querySelector('div')
+    updateTask(status){
+        const id = status.id;
+        const newStatus = status.status;
+        const table = this.#shadow.getElementById("tasktable");
+        console.log("inni updateTask");
+        if (table.rows.length > 1){
+            let found = 0;
+            console.log("inni 1st if");
+            for (var i=1;i<table.rows.length;i++){
+                console.log("inni for");
+                if (table.rows[i].cells[0].innerHTML === id){
+                    console.log("fant riktig inni for");
+                    table.rows[i].cells[2].innerHTML = newStatus;
+                    found = 1;
+                    break;
+                }
+            }
+
+            if(found){
+                console.log('--for testing-- task with id = ['+id+'] had status changed');
+            }
+            else{
+                console.log('task with id = ['+id+'] not found');
+            }
+        }
     }
 
     removeTask(id){
@@ -189,7 +199,8 @@ export default class extends HTMLElement {
         event.preventDefault();
         this.message = "";
 
-        this.#callbacks.get(this.#addcallbackId).call();
+        const met = this.#callbacks.get(this.#addcallbackId);
+        met();
         //    this.#callbacks.forEach(method => { method() });
 
     }
@@ -203,7 +214,8 @@ export default class extends HTMLElement {
         const newstatusJSON = {};
         newstatusJSON.status = newstatus;
         //   this.#callbacks.forEach(method => { method(newstatus,id) });
-        this.#callbacks.get(this.#changecallbackId).call(null,id,newstatusJSON);
+        const met = this.#callbacks.get(this.#changecallbackId);
+        met(id,newstatusJSON);
 
         console.log("confirmed");
     //    }
@@ -213,12 +225,19 @@ export default class extends HTMLElement {
         console.log("deleting: ?");
         console.log("deleting: " + id);
 
-        this.#callbacks.get(this.#deletecallbackId).call(null,id);
+    //    this.#callbacks.get(this.#deletecallbackId).call(null,id);
+        const met = this.#callbacks.get(this.#deletecallbackId);
+        met(id);
 
         //     this.#callbacks.forEach(method => { method(id) });
     }
-//
-//    #noTask(){
-//        
-//    }
+
+    noTask(){
+
+        const form = this.#shadow.getElementById("tasktable");
+        form.parentNode.removeChild(form);
+
+        this.#shadow.getElementById("taskForm").innerHTML = '<p>No tasks were found.</p>';
+
+    }
 }
