@@ -53,7 +53,6 @@ export default class extends HTMLElement {
             <th></th>
             <th></th>
          </tr>
-
         </table>
         </form>
         `
@@ -238,6 +237,5 @@ export default class extends HTMLElement {
         form.parentNode.removeChild(form);
 
         this.#shadow.getElementById("taskForm").innerHTML = '<p>No tasks were found.</p>';
-
-    }
+        
 }
