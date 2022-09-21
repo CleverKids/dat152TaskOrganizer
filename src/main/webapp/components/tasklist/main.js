@@ -231,11 +231,11 @@ export default class extends HTMLElement {
         //     this.#callbacks.forEach(method => { method(id) });
     }
 
-    noTask(){
+    noTask() {
 
         const form = this.#shadow.getElementById("tasktable");
         form.parentNode.removeChild(form);
 
         this.#shadow.getElementById("taskForm").innerHTML = '<p>No tasks were found.</p>';
-        
+    }
 }
