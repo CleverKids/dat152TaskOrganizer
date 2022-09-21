@@ -122,7 +122,7 @@ console.log("heiTasksview1");
                 if (typeof object.responseStatus != "undefined") {
                     if (object.responseStatus) {
                     //    const tasklist = document.querySelector("task-list");
-                       tasklist.updateTask(object.task);
+                    //   tasklist.updateTask(object.task);
                     } else {
                         console.log("Could not connect to server");
                     }
@@ -136,16 +136,26 @@ console.log("heiTasksview1");
     }
 
     async function deleteTask(taskId)
+
     {
+        console.log("about to delete:" + taskId + "!");
+
+        const requestSettings = {
+            "method": "DELETE",
+            "headers": {"Content-Type": "application/json; charset=utf-8"},
+            "body": "",
+            "cache": "no-cache",
+            "redirect": "error"
+        };
         try {
-            const response = await fetch(url+"/task/" + taskId, {"method": "DELETE"});
+            const response = await fetch(url+"/task/" + taskId, requestSettings);
             if (response.ok) {
                 const object = await response.json();
                 if (typeof object.responseStatus != "undefined") {
                     if (object.responseStatus) {
                     //    const tasklist = document.querySelector("task-list");
-                        tasklist.removeTask(object.id);
-                        console.log("deleted hei");
+                    //    tasklist.removeTask(object.id);
+                        console.log("deleted task: " + taskId);
                     } else {
                         console.log("Could not connect to server");
                     }

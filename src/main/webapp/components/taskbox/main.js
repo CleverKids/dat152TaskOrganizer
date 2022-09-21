@@ -9,10 +9,10 @@ export default class extends HTMLElement {
 
         this.#shadow = this.attachShadow({ mode: 'open' });
 
-        const button = document.querySelector("button");
+    //    const button = document.querySelector("button");
         console.log("heiBox");
-        console.log(button);
-        button.addEventListener('click', this.show.bind(this));
+    //    console.log(button);
+    //    button.addEventListener('click', this.show.bind(this));
 
     }
 

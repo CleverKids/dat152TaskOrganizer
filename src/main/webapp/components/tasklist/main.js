@@ -80,12 +80,7 @@ export default class extends HTMLElement {
     showTask(newtask){
         const table = this.#shadow.getElementById("tasktable");
         const row = table.insertRow(1);
-      /*  const statusOptions= `<select>
-                            <option value="" selected disabled hidden>Modify</option>
-                            <option>${this.#statuses[0]}</option>
-                            <option>${this.#statuses[1]}</option>
-                            <option>${this.#statuses[2]}</option>
-                        </select>`;*/
+
 
         const remove = document.createElement("button");
         //    `<button id=newtask.id>Remove</button>`;
@@ -93,68 +88,8 @@ export default class extends HTMLElement {
             remove.id = newtask.id;
 
         //    const tempRemove = this.deletetaskCallback;
-            remove.addEventListener('click',() => {this.deletetaskCallback(newtask.id);
-            });
+            remove.addEventListener('click',() => {this.deletetaskCallback(newtask.id)});
 
-/*
-            const content ="
-            <table id="tasktable">
-                <tbody>
-                <tr>
-                    <th>Task</th>
-                    <th>Status</th>
-                    <th>
-                    </th>
-                    <th>
-                    </th>
-                </tr>
-
-                <tr>
-                    <td hidden="">3</td>
-                    <td>Wash floor</td>
-                    <td>DONE</td>
-                    <td>
-                        <select id="3">
-                        <option disabled="" hidden="">Modify</option>
-                        <option>WAITING</option>
-                        <option>ACTIVE</option>
-                        <option>DONE</option>
-                    </select></td><td>
-                        <button id="3">Remove</button>
-                </td>
-                </tr>
-                <tr>
-                    <td hidden="">2</td>
-                    <td>Wash windows</td>
-                    <td>ACTIVE</td>
-                    <td>
-                        <select id="2">
-                            <option disabled="" hidden="">Modify</option>
-                            <option>WAITING</option>
-                            <option>ACTIVE</option>
-                            <option>DONE</option
-                            ></select></td>
-                    <td>
-                        <button id="2">Remove</button>
-                </td>
-                </tr>
-                <tr>
-                    <td hidden="">1</td>
-                    <td>Paint roof</td>
-                    <td>WAITING</td>
-                    <td><select id="1">
-                        <option disabled="" hidden="">Modify</option>
-                        <option>WAITING</option>
-                        <option>ACTIVE</option>
-                        <option>DONE</option>
-                    </select>
-                    </td>
-                    <td><button id="1">Remove</button>
-                    </td></tr>
-                </tbody>
-            </table>
-"
-*/
 
         const statusOptions = document.createElement("select");
         statusOptions.id = newtask.id;
@@ -173,32 +108,16 @@ export default class extends HTMLElement {
         opt0.hidden = true;
         opt0.selected = true;
 
-
-
-/*        opt0.value= "";
-        opt1.value = `${this.#statuses[0]}`,`${newtask.id},${this.#statuses[0]}`;
-        opt1.value = `${this.#statuses[0]}`,`${newtask.id},${this.#statuses[0]}`;
-        opt1.value = `${this.#statuses[0]}`,`${newtask.id},${this.#statuses[0]}`;
-*/
         console.log(`${newtask.id}`);
         console.log(`${this.#statuses[0]}`);
 
         const tempStatuses = this.#statuses;
         const change = this.changestatusCallback;
 
-     //   opt1.onchange = function(){change(1,"tull");};
         opt1.addEventListener(`click`, () => this.changestatusCallback(newtask.id,this.#statuses[0]));
-
-    /*    opt1.addEventListener(`click`,function(){
-            console.log("opt1");
-            change(1,"tull");
-        });
-    */    opt2.addEventListener(`click`, () => this.changestatusCallback(newtask.id,this.#statuses[1]));
+        opt2.addEventListener(`click`, () => this.changestatusCallback(newtask.id,this.#statuses[1]));
         opt3.addEventListener(`click`,() => this.changestatusCallback(newtask.id,this.#statuses[2]));
-   //     );
-  //          console.log("opt3");
-  //          change(newtask.id,tempStatuses[2]);
-     //   });
+
 
         statusOptions.add(opt0);
         statusOptions.add(opt1);
@@ -257,7 +176,8 @@ export default class extends HTMLElement {
     }
 
    enableaddtask(){
-       const button = this.#shadow.getElementById("addTaskBtn");
+       const button = document.getElementById("addTaskBtn");
+       //    const button = document.querySelector("button");
        console.log("heiBox");
        console.log(button);
        button.disabled = false;
@@ -265,13 +185,11 @@ export default class extends HTMLElement {
    }
 
     addtaskCallback(event){
-        console.log("opening taskbox")
-
+        console.log("opening taskbox");
         event.preventDefault();
         this.message = "";
-    //    const addcallBackid = this.#addcallbackId
 
-       this.#callbacks.get(this.#addcallbackId)();
+        this.#callbacks.get(this.#addcallbackId).call();
         //    this.#callbacks.forEach(method => { method() });
 
     }
@@ -282,34 +200,22 @@ export default class extends HTMLElement {
 
     changestatusCallback(id,newstatus){
         console.log("status change hei");
-        const conf = window.confirm("something");
+        const newstatusJSON = {};
+        newstatusJSON.status = newstatus;
+        //   this.#callbacks.forEach(method => { method(newstatus,id) });
+        this.#callbacks.get(this.#changecallbackId).call(null,id,newstatusJSON);
 
-    //   if (
-      //     window.confirm("Set " +  + " to " +  + " ?")){
-     //   if(conf){
-      //  const idChange = id;
-       const newstatusJSON = {};
-       newstatusJSON.status = newstatus;
-      //  const changeCallbackNr = this.#changecallbackId;
-        //   this.#callbacks.forEach(method => { method(idChange,newstatusChange) });
-              this.#callbacks.get(this.#changecallbackId).call(null, id ,newstatusJSON);
-    //    this.#callbacks[changeCallbackNr].forEach(t => t(idChange,newstatusChange));
-           console.log("confirmed");
+        console.log("confirmed");
     //    }
     }
 
     deletetaskCallback(id){
+        console.log("deleting: ?");
         console.log("deleting: " + id);
 
-      //  const idDelete = id;
-      //  const deleteCallBackNr = this.#deletecallbackId;
-       //    this.#callbacks[this.#deletecallbackId](idDelete);
-      //  const met = this.#callbacks.get(this.#deletecallbackId);
-      //  met.forEach(m => m(id));
-      //  const args = {id};
         this.#callbacks.get(this.#deletecallbackId).call(null,id);
 
-        //    this.#callbacks.forEach(method => { method(idDelete) });
+        //     this.#callbacks.forEach(method => { method(id) });
     }
 //
 //    #noTask(){
